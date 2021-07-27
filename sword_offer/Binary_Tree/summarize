@@ -1,0 +1,144 @@
+类型总结:
+1.层次遍历
+2.前序/中序/后序遍历
+
+---------------------------------------------------------------------------------------------------
+
+1.层次遍历问题解法：结合队列（先进先出）、栈（先进后出）的使用。
+队列模板解法：
+1.1初始化：一个队列queue<TreeNode*> q， 将root节点入队列q
+1.2如果队列不空，做如下操作：
+1.3弹出队列头，保存为node，将node的左右非空孩子加入队列
+1.4做1.2,1.3步骤，直到队列为空
+
+如果不需要确定当前遍历到那一层，模板：
+void bfs(){
+    vis[] = {0}  // or set
+    queue<int> q(start_val);
+    while(!q.empty()){
+        int cur = q.front();
+        for(遍历cur所有的相邻节点next){
+            if(next有效 && vis[next]==0)
+            {
+                vis[next]=1;
+                q.push(next);
+            }
+        }
+    }
+}
+
+如果要确定当前遍历到那一层，模板：
+void bfs() {
+ int level = 0;
+ vis[] = {0}; // or set
+ queue<int> pq(original_val);
+ while (!pq.empty()) {
+     int sz = pq.size();
+
+     while (sz--) {
+             int cur = pq.front(); pq.pop();
+         for (遍历cur所有的相邻节点nex) {
+             if (nex节点有效 && vis[nex] == 0) {
+                 vis[nex] = 1;
+                 pq.push(nex)
+             }
+         } // end for
+     } // end inner while
+     level++;
+ } // end outer while
+}
+
+2.
+前序遍历/中序遍历/后序遍历
+
+//前序遍历：递归
+void preOrder(TreeNode *root){
+    vector<int> res;
+    if(root){
+        res.push_back(root->val);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+//前序遍历：非递归 使用栈
+/**
+使用一个栈stack。
+先将头结点压入，再在栈不为空的前提下循环：
+1.弹出栈顶元素
+2.判断该节点右孩子不为空，压入该右孩子
+3.判断该节点左孩子不为空，压入该左孩子（此时该值为栈顶元素），循环1的操作
+故，第一步把头结点弹出，然后先压右再压左，弹出的顺序便是先弹左再弹右，符合中左右的顺序。
+*/
+void preOrder(TreeNode *root){
+    vector<int> res;
+    stack<TreeNode *> s;
+    s.push(root);
+    TreeNode *cur = NULL;
+    while(!s.empty()){
+        TreeNode *cur = s.top();
+        res.push_back(cur->val);
+        s.pop();
+        if(cur->right)
+            s.push(cur->right);
+        if(cur->left)
+            s.push(cur->left);
+    }
+}
+
+//中序遍历 递归
+void InOrder(TreeNode *root){
+    vector<int> res;
+    if(root){
+        InOrder(root->left);
+        res.push_back(root->val);
+        InOrder(root->right);
+    }
+}
+
+//中序遍历 非递归 使用栈
+/**
+使用一个栈stack。
+在节点不为空 | 在栈不为空的前提下循环：
+1.节点不为空，将节点的左边界（左孩子...)全部顺序入栈
+2.节点为空，弹出栈顶元素，将元素的右孩子压入栈中*/
+void InOrder(TreeNode *root){
+    if(root == NULL) return;
+    vector<int> res;
+    stack<TreeNode *> s;
+    TreeNode *cur = root;
+    if(!s.empty() || cur != NULL){
+        if(cur!=NULL){
+            s.push(cur);
+            cur=cur->left;
+        }else{
+            cur = s.top();
+            s.pop();
+            res.push_back(cur->val);
+            if(cur->right)
+                cur=cur->right;
+        }
+    }
+}
+
+//后序遍历 递归
+void PostOrder(TreeNode *root){
+    vector<int> res;
+    if(root){
+        PostOrder(root->left);
+        PostOrder(root->right);
+        res.push_back(root->val);
+    }
+}
+
+//后序遍历 非递归 栈
+void PostOrder(TreeNode *root){
+    if(root == NULL) return;
+    vector<int> res;
+    stack<TreeNode *> s;
+    TreeNode *cur=root;
+    while(!s.empty() || cur != NULL){
+        if()
+    }
+
+}
