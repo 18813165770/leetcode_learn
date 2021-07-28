@@ -137,8 +137,25 @@ void PostOrder(TreeNode *root){
     vector<int> res;
     stack<TreeNode *> s;
     TreeNode *cur=root;
+    TreeNode *visitFlag=NULL;
     while(!s.empty() || cur != NULL){
-        if()
+        if(cur){
+            s.push(cur);
+            cur=cur->left;
+        }else{
+            cur = s.top();
+            if(cur->right && cur->right != visitFlag){
+                cur = cur->right;
+                s.push(cur);
+                cur=cur->left;
+            }else{
+                cur = s.top();
+                s.pop();
+                visitFlag = cur;
+                res.push_back(cur->val);
+                cur = null;
+            }
+        }
     }
-
 }
+
