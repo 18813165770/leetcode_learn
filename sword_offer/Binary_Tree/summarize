@@ -17,6 +17,7 @@ class TreeNode {
 
 2.二叉搜索树
 
+3.中等难度题： 二叉树展开为链表， 最大二叉树
 ---------------------------------------------------------------------------------------------------
 
 1.层次遍历问题解法：结合队列（先进先出）、栈（先进后出）的使用。
@@ -232,4 +233,96 @@ int numTrees(int n){
 		}
 	}
 	res[n];
+}
+
+
+3.探讨递归和非递归问题
+树的递归题目，其实无非就是两点：1.先递归左子树还是先递归右子树；2.逻辑放在递归前还是逻辑放在递归后。
+3.1  《114. 二叉树展开为链表》
+题意：给定一棵树，根据前序遍历将其展开为一个【只有右子树有值的，左子树为null的】类似于链表的结构，如下图
+        1
+     /	  \
+    2      5
+  /  \      \
+3      4     6
+flatten:
+ 1
+  \
+   2
+    \
+     3
+      \
+       4
+        \
+         5
+	  \ 
+           6
+
+
+//思路：迭代：一般来讲，广搜用队列，深搜用栈
+//前序遍历的顺序是根节点->左->右，所以我们先把右子树结点入栈，再把左子树结点入栈，然后依次操作
+void flatten(TreeNode *root){
+    if(root==NULL) return;
+    stack<TreeNode *> s;
+    s.push(root);
+    while(!s.empty()){
+        TreeNode *cur = s.top();
+        if(cur->right)
+            s.push(cur->right);
+        if(cur->left)
+            s.push(cur->left);
+        cur->left=NULL;
+        if(s.empty()){
+            cur->right=NULL;
+        }else{
+            cur->right=s.top();
+        }
+    }
+}
+
+//递归
+TreeNode *pre=NULL;
+void flatten(TreeNode *root){
+    if(root==NULL) return;
+    flatten(root->right);
+    flatten(root->left);
+    root->right=prev;
+    root->left=null;
+    pre=root;
+}
+
+
+95. 最大二叉树
+题意： 给定一个不含重复元素的整数数组。一个以此数组构建的最大二叉树定义如下：
+ 1.二叉树的根是数组中的最大元素。
+ 2.左子树是通过数组中最大值左边部分构造出的最大二叉树。
+ 3.右子树是通过数组中最大值右边部分构造出的最大二叉树。
+ 4.通过给定的数组构建最大二叉树，并且输出这个树的根节点。
+ Input:[3,2,1,6,0,5]
+      6
+    /   \ 
+  3      5
+   \    /
+    2  0
+     \
+       1
+
+//递归 这道题其实是一道简单版的构造一棵“二叉搜索树”，只是这的“二叉搜索树”被题中规定的“最大树”替换了。
+public TreeNode constructMaximumBinaryTree(vector<int> nums) {
+    return help(nums, 0, nums.size());
+}
+TreeNode help(vector<int> nums, int st, int en){
+    if(st > en) return NULL;
+    int flag=0;
+    int maxnum=-1;
+    for(int i=st;i<=en;i++){
+        if(nums[i]>=maxnum){
+            maxnum = nums[i];
+            flag=i;
+        }
+    }
+    TreeNode *root = new TreeNode(maxnum);
+    root->left = help(nums, st, flag-1);
+    root->right = help(nums, flag+1, en);
+    return root;
 }
