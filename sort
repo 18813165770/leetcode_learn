@@ -9,8 +9,8 @@ using namespace std;
 
 /*
 简单排序：
-冒泡排序：最好O(n)  最坏O(n2) 平均O(n2)  空间O(1)  稳定
-选择排序：最好O(n2)  最坏O(n2) 平均O(n2) 空间O(1)  不稳定
+冒泡排序：最好O(n)   最坏O(n2)  平均O(n2)  空间O(1)  稳定
+选择排序：最好O(n2)  最坏O(n2)  平均O(n2)  空间O(1)  不稳定
 */
 void BubbleSort(vector<int> &arr){
     if(arr.empty() || arr.size()==1)
@@ -27,6 +27,12 @@ void BubbleSort(vector<int> &arr){
     }
 }
 
+/***
+选择排序
+①遍历整个数组，找到最小位置元素的位置
+②将其和序列的第一个元素进行交换，则第一个位置元素已排好序，对剩余部分继续排序
+③对剩余未排序序列重复①②操作，直至整个序列都排好序
+*/
 void SelectSort(vector<int> &arr){
     if(arr.empty() || arr.size()==1)
         return;
@@ -46,8 +52,19 @@ void SelectSort(vector<int> &arr){
 
 /*
 *插入排序：
-简单插入排序 最好O(n)  最坏O(n2) 平均O(n2)  空间O(1)  稳定
-希尔排序     最好O(n)  最坏O(n2) 平均O(n1.3)空间O(1)  不稳定
+插入排序     最好O(n)  最坏O(n2) 平均O(n2)   空间O(1)  稳定
+希尔排序     最好O(n)  最坏O(n2) 平均O(n1.3) 空间O(1)  不稳定
+*/
+/**
+算法描述
+①首先对前两个元素进行比较并排序
+②将第三个元素放入到前两个有序数组的合适位置，完成后，前三个元素为有序数组
+③再对下一个元素重复①②步骤，直至所有元素排序完成
+
+对第i个元素来说，前面i-1个元素是拍好顺序的，因此，如果前面有序数组中第k(0<=k<=i-1)
+个元素大于第i个元素，则k~i-1的元素都会大于它，因此，从第i-1位置的元素开始，
+依次往后挪一位，最后在空的位置将原始的第i个元素的值填入，更好的利用了前部数组的有
+序条件。
 */
 void SampleInsertSort(vector<int> &arr){
     if(arr.empty() || arr.size()==1) return;
@@ -79,12 +96,34 @@ void ShellSort(vector<int> &arr){
     }
 }
 
+/**
+归并排序  最好O(nlogN)  最坏O(nlogN) 平均O(nlogN)   空间O(n)     稳定
+快速排序  最好O(nlogN)  最坏O(n2)    平均O(nlogN)   空间O(logn)  不稳定
+*/
+void Merge(vector<int> &left, vector<int> &right, vector<int> &arr){
+    arr.clear();
+    int l=0,r=0;
+    while(l<left.size() && r<right.size()){
+        if(left[l]<=right[r]){
+            arr.push_back(left[l]);
+        }else{
+            arr.push_back(right[r]);
+        }
+    }
+    while(l<left.size())
+        arr.push_back(left[l]);
+    while(r<right.size())
+        arr.push_back(right[r]);
+}
 
 void MergeSort(vector<int> &arr){
     if(arr.size()<2) return;
-    int st = 0, en =arr.size()-1;
-    MergeSortH(arr, res, 0, n-1);
-
+    int mid = arr.size() / 2;
+    vector<int> left(arr.begin(), arr.begin()+mid);
+    vector<int> right(arr.begin()+mid, arr.end());
+    MergeSort(left);
+    MergeSort(right);
+    Merge(left,right, arr);
 }
 
 void QuickSortH(vector<int> &arr, int st, int en){
@@ -111,7 +150,7 @@ void QuickSort(vector<int> &arr){
     QuickSortH(arr,i, j);
 }
 /**
-//堆排序整体的时间复杂度为O(n*log n).
+//堆排序整体的时间复杂度为O(n*log n). 空间复杂度O(1)  不稳定
 */
 void adjust(vector<int> &arr, int par, int len){
     int left = par*2+1;
@@ -142,8 +181,18 @@ void HeapSort(vector<int> &arr){
         adjust(arr, 0, i);
     }
 }
+/**
+计数排序 时间最好O(n+k) 最坏O(n+k)  平均O(n+k), 空间O(n+k)   稳定
+桶排序   时间最好O(n+k) 最坏O(n2)   平均O(n+k), 空间O(n+k)   稳定
+基数排序 时间最好O(n*k) 最坏O(*k)   平均O(n*k), 空间O(n+k)   稳定
+*/
 
-//计数排序 时间复杂度O(n), 空间复杂度O(n)
+/**
+解题思路：
+1.先找出序列中最大值，最小值
+2.申请辅助空间（最大值-最小值+1），每个元素都存放到下标（当前元素-最小值）的桶里，桶里放该序列中相同的元素的个数。
+3.依次遍历桶，桶当前元素就是（下标+最小值），输出次数就是桶里存放的值。再依次放到原先的序列里，就是已经排序好的序列。
+*/
 void CountingSort(vector<int> &arr){
     //1. 获得待排序数据的最大值,最小值
     int minx=arr[0], maxx=arr[0];
@@ -166,7 +215,13 @@ void CountingSort(vector<int> &arr){
         }
     }
 }
-
+/**
+解题思路：
+1.先找出序列中最大值，最小值
+2.申请辅助空间（最大值-最小值+1），定义每个桶的大小，先确定有多少桶，
+3.依次将序列里的元素存到每个桶里。
+4.遍历桶，对每个桶的元素排序后，再依次放到原先的序列里
+*/
 void BucketSort(vector<int> &arr){
     //1. 获得待排序数据的最大值,最小值
     int minx=arr[0], maxx=arr[0];
@@ -206,42 +261,51 @@ void BucketSort(vector<int> &arr){
 14, 22, 28, 39, 43, 55, 65, 73, 81, 93
 则持续进行以上的动作直至最高位数为止。
 */
-void RadixSort(vector<int> &arr){
-    int n = arr.size();
-    if(n < 2)
-        return;
-    //1.获取最大值
-    int maxx=arr[0];
-    for(int i=0;i<arr.size();i++){
-        if(arr[i]>=maxx) maxx=arr[i];
+/**
+解题思路：
+1.利用桶的思路，先找出序列中最大值，并确定最大值的位数，可以知道需要循环几遍
+2.在每轮循环（位数）中，先申请空间10个桶，（因为是分配到0-9的桶里），将序列中的值根据位数取余放到对应桶里（桶里不用排序）。
+3.再依次将每个桶里的值取出放回原序列中。再执行2，3直到循环结束。
+*/
+int pow(int x, int y){
+    if(y==0) return 1;
+    int i,res=1;
+    for(i=1;i<=y;i++){
+        res *= x;
     }
-    //2.获取最大值的位数
-    int digit=1;
-    while(maxx/10 > 0){
-        ++digit;
-        maxx/=10;
-    }
-    //3.申请空间，共10个桶
-    vector<vector<int>> bucket;
-    int radix = 1;
-    for(int i=1;i<=digit;i++){
-
-        bucket.clear(); //每轮清空桶
-        for(int j=0;j<arr.size();j++){
-            int radix = (arr[j] / radix) % 10;
-            bucket[radix].push_back(arr[j]);
-        }
-
-        int k=0;
-        for(int m=0;m<10;m++){
-            SampleInsertSort(bucket[m]);
-            for(int n=0;n<bucket[m].size();n++){
-                arr[k++]=bucket[m][n];
-            }
-        }
-        radix = radix * 10;
-    }
+    return res;
 }
+void RadixSort(vector<int>&arr) {
+	//最大位数
+	int maxx = arr[0];
+	for (int i = 0; i < arr.size(); ++i){
+        if(arr[i]>maxx)
+            maxx=arr[i];
+	}
+	int digit=1;
+	while(maxx/10>0){
+        digit++;
+        maxx /= 10;
+	}
+
+	for (int i = 0; i < digit; ++i) {
+        //十进制
+		vector<vector<int>>radix(10);
+		//分配
+		for (int j = 0; j < arr.size(); ++j) {
+			int index = int(arr[j] / pow(10, i)) % 10;
+			radix[index].push_back(arr[j]);
+		}
+		int k = 0;
+		//收集
+		for (int j = 0; j < radix.size(); ++j) {
+			for (int m=0;m<radix[j].size();m++) {
+				arr[k++] = radix[j][m];
+			}
+		}
+	}
+}
+
 
 
 int main(){
