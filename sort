@@ -100,30 +100,64 @@ void ShellSort(vector<int> &arr){
 归并排序  最好O(nlogN)  最坏O(nlogN) 平均O(nlogN)   空间O(n)     稳定
 快速排序  最好O(nlogN)  最坏O(n2)    平均O(nlogN)   空间O(logn)  不稳定
 */
-void Merge(vector<int> &left, vector<int> &right, vector<int> &arr){
-    arr.clear();
-    int l=0,r=0;
-    while(l<left.size() && r<right.size()){
-        if(left[l]<=right[r]){
-            arr.push_back(left[l]);
-        }else{
-            arr.push_back(right[r]);
-        }
-    }
-    while(l<left.size())
-        arr.push_back(left[l]);
-    while(r<right.size())
-        arr.push_back(right[r]);
+
+void Merge(vector<int> &vec, int beginPos, int midPos, int endPos)
+{
+	int leftLen, rightLen, i, j, k;
+
+	leftLen = midPos - beginPos + 1;
+	rightLen = endPos - midPos;
+
+	vector<int> leftArr(leftLen);
+	vector<int> rightArr(rightLen);
+
+	// 数组分别保存左右两边数据
+	for (i = 0; i < leftLen; i++)
+	{
+		leftArr[i] = vec[beginPos + i];
+	}
+
+	for (j = 0; j < rightLen; j++)
+	{
+		rightArr[j] = vec[midPos + 1 + j];
+	}
+
+	i = j = 0;
+	k = beginPos;
+	// 接下来从左右两数组比较合并
+	while (i < leftLen && j < rightLen)
+	{
+		if (leftArr[i] <= rightArr[j])
+		{
+			vec[k++] = leftArr[i++];
+		}
+		else
+		{
+			vec[k++] = rightArr[j++];
+		}
+	}
+
+	for (; i < leftLen; i++)		// 如果左数组还有剩余，则将剩余元素合并到vec
+	{
+		vec[k++] = leftArr[i];
+	}
+	for (; j < rightLen; j++)		// 如果右数组还有剩余，则将剩余元素合并到vec
+	{
+		vec[k++] = rightArr[j];
+	}
 }
 
+void MergeSort(vector<int> &arr, int be, int en){
+    int mid;
+    if(be < en){
+        mid = (be+en) / 2;
+        MergeSort(arr, be, mid);   // 递归拆分左半边数组
+        MergeSort(arr, mid+1, en); // 递归拆分右半边数组
+        Merge(arr, be, mid, en);   // 合并数组
+    }
+}
 void MergeSort(vector<int> &arr){
-    if(arr.size()<2) return;
-    int mid = arr.size() / 2;
-    vector<int> left(arr.begin(), arr.begin()+mid);
-    vector<int> right(arr.begin()+mid, arr.end());
-    MergeSort(left);
-    MergeSort(right);
-    Merge(left,right, arr);
+    MergeSort(arr, 0, arr.size()-1);
 }
 
 void QuickSortH(vector<int> &arr, int st, int en){
@@ -305,7 +339,6 @@ void RadixSort(vector<int>&arr) {
 		}
 	}
 }
-
 
 
 int main(){
