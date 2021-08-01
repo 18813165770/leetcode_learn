@@ -1,0 +1,220 @@
+哈希表
+
+
+
+
+1.基础知识
+
+
+哈希法
+当需要快速判断一个元素是否在集合里时，考虑用哈希法。哈希法“使用空间换时间”。
+常见的哈希结构：set，map，数组。
+
+c++里set和map都提供以下三种数据结构。
+c++中set，有三种类型：
+std::unordered_set          底层实现是哈希表，  key无序   查找元素O(1)
+std::set                    底层实现是红黑树    key有序   查找元素O(logn)
+std::multiset               底层实现是红黑树    key有序   查找元素O(logn)
+
+c++中map，有三种类型：
+std::unordered_map          底层实现是哈希表，  key无序   查找元素O(1)
+std::map                    底层实现是红黑树    key有序   查找元素O(logn)
+std::multimap               底层实现是红黑树    key有序   查找元素O(logn)
+
+
+
+2.题目
+
+
+Leetcode 1：Two Sum
+给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+输入：nums = [2,7,11,15], target = 9
+输出：[0,1]
+
+输入：nums = [3,2,4], target = 6
+输出：[1,2]
+
+解题思路：
+查找表法（以空间换时间的思想），最常用的实现：
+哈希表
+平衡二叉搜索树
+
+
+方法一：暴力方法：两层循环，时间复杂度O(n2)，空间复杂度O(1)
+枚举整个数组中每一个x，寻找是否存在target-x。因为位于x之前的元素都和x匹配过，因此不需要匹配，而每个元素不会被使用两次，所以需要在x之后寻找元素target-x。
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        //暴力方法：两层循环
+        vector<int> res;
+        for(int i=0;i<nums.size()-1;i++){ //第一个元素一定不是数组中最后一个元素
+            for(int j=i+1;j<nums.size();j++){
+                if(nums[i] + nums[j] == target){
+                    res.push_back(i);
+                    res.push_back(j);
+                }
+            }
+        }
+        return res;
+    }
+};
+
+方法二：c++里的map，因为该题不需要key有序，可以使用unordered_map效率更高，底层是哈希表。
+思路：
+1.先建立一个map，将元素存到map中，key是元素值，value是下标
+2.遍历数组，对当前元素nums[i]，在map中查找是否有target-nums[i]这个key，如果有且i != map[target-nums[i]]，可以把当前元素下标i和map[target-nums[i]]的下标存到vector中，因为只会有一个答案，因此找到后返回即可。
+ 
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> res;
+        std::unordered_map <int, int> map;
+        for(int i=0;i<nums.size();i++)
+            map[nums[i]]=i;
+
+        for(int i=0;i<nums.size();i++){
+            int tmp = target-nums[i];
+            if(map.count(tmp) && map[tmp] != i){
+                res.push_back(i);
+                res.push_back(map[tmp]);
+                break;
+            }
+        }
+        return res;
+}
+
+
+Leetcode：242.有效的字母异位词（简单）
+给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+注意：若 s 和 t 中每个字符出现的次数都相同，则称 s 和 t 互为字母异位词。
+
+输入: s = "anagram", t = "nagaram"
+输出: true
+示例 2:
+
+输入: s = "rat", t = "car"
+输出: false
+
+思路1：哈希表 时间复杂度O(n)，空间复杂度O(n)
+1.边界条件：s和t的字母个数相同，若不同则不是异位词，返回false。
+2.使用哈希表，建立一个无序的map，将s里的元素存储到map里，key是元素，value是个数。
+3.遍历t，对每个元素在map中将value值-1，如果map中查不到则返回false
+4.重新遍历一遍s，若有元素value!=0,则表示t中有元素个数超过s中个数，返回false
+5.以上条件都满足，返回true。
+
+class Solution { 
+public: 
+    bool isAnagram(string s, string t) { 
+        if(s.length() != t.length()) 
+            return false; 
+        std::unordered_map<char, int> map; 
+        for(int i=0;i<s.length();i++){ 
+            map[s[i]]++; 
+        } 
+        for(int i=0;i<t.length();i++){ 
+            if(map.count(t[i])){ 
+                map[t[i]]--; 
+            } else{ 
+                return false; 
+                    } 
+         } 
+        for(int i=0;i<s.length();i++){ 
+            if(map[s[i]] != 0) 
+                return false; 
+            } 
+            return true; 
+        } 
+};
+
+
+思路2：时间复杂度O(n)，空间复杂度O(26)
+使用长度为26的数组arr，表示26个英文字母。此数组只需要记住相对位置即可，不用考虑ascII
+1.边界条件：s和t的字母个数相同，若不同则不是异位词，返回false。
+2.建立26个元素的数组，遍历s，每个元素arr[s[i]-'a']个数+1
+3.遍历t，对每个元素arr[t[i]-'a']个数-1
+4.再遍历一次数组arr，如果有位置的个数!=0，则表示s和t不同
+
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.length() != t.length())
+            return false;
+        vector<int> res(26, 0);
+        for(int i=0;i<s.length();i++){
+            res[s[i]-'a']++;
+            res[t[i]-'a']--;
+        }
+        for(int i=0;i<26;i++){
+            if(res[i] != 0)
+                return false;
+        }
+        return true;
+    }
+};
+
+
+Leetcode：1002 查找常用字符
+给定仅有小写字母组成的字符串数组 A，返回列表中的每个字符串中都显示的全部字符（包括重复字符）组成的列表。例如，如果一个字符在每个字符串中出现 3 次，但不是 4 次，则需要在最终答案中包含该字符 3 次。你可以按任意顺序返回答案。 
+提示：
+	1. 
+1 <= A.length <= 100
+	2. 
+1 <= A[i].length <= 100
+	3. 
+A[i][j] 是小写字母
+
+示例 1：
+输入：["bella","label","roller"]
+输出：["e","l","l"]
+
+示例 2：
+输入：["cool","lock","cook"]
+输出：["c","o"]
+
+思路1：使用哈希法，建立26个字符的数组统计每个字符出现的频率，然后取频率最小的值，转成最终输出形式即可。
+
+1.建立一个26个字符的数组has，先统计第一个字符串所有字符出现的次数。
+2.从第二个字符串开始遍历，先存储到新的数组otherHas，然后每个字符取min（otherHas， has）中最少次数，更新has这个数组
+3.重复2，直到全部字符串遍历完
+4.建立返回的数组，统计数组has中每个字符的次数，转成输出的形式
+
+class Solution {
+public:
+    vector<string> commonChars(vector<string>& words) {
+        vector<string> res;
+        vector<int> has(26, 0);
+
+        if(words.size() == 0) return res;
+        
+        for (int i = 0; i < words[0].size(); i++) {
+            has[words[0][i] - 'a']++;
+        }
+
+        for (int i = 1; i < words.size(); i++) {
+            vector<int> otherHas(26, 0);
+
+            for (int j = 0; j < words[i].size(); j++) {
+                otherHas[words[i][j] - 'a']++;
+            }
+
+            for(int k = 0;k < 26; k++){
+                has[k] = min(has[k], otherHas[k]);
+            }
+        }
+
+        for(int i=0;i<26;i++){
+            while(has[i] != 0){
+                string s(1, i+'a');
+                res.push_back(s);
+
+                has[i]--;
+                
+            }
+        }
+        return res;
+    }
+};
+
+
+Leetcode 349. 两个数组的交集
