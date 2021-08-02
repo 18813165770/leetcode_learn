@@ -218,3 +218,137 @@ public:
 
 
 Leetcode 349. 两个数组的交集
+给定两个数组，编写一个函数来计算它们的交集。
+
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2]
+示例 2：
+
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[9,4]
+
+说明：
+输出结果中的每个元素一定是唯一的。
+我们可以不考虑输出结果的顺序。
+
+
+思路一：两个集合：
+题目的说明是输出结果中的每个元素唯一，且不考虑输出结果顺序，可以用unordered_set<int>。
+
+
+步骤：
+1.先将一个数组nums1放到一个set中
+2.依次遍历另一个数组nums2里的元素，如果能在set中找到，则存放在第二个set里(每个元素唯一)。
+3.转成输出格式vector即可。
+
+
+复杂度分析：
+假设两个vector的长度为m，n。使用哈希查找O(1)找到元素，因此时间复杂度O(m+n)，空间复杂度O(m+n)
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> nums1_set(nums1.begin(), nums1.end());
+        unordered_set<int> num_set;
+
+        for(int i=0;i<nums2.size();i++){
+            if(nums1_set.find(nums2[i]) != nums1_set.end())
+                num_set.insert(nums2[i]);
+        }
+
+        return vector<int>(num_set.begin(), num_set.end());
+    }
+};
+
+
+思路二：排序+双指针
+如果两个数组有序，就可以使用双指针遍历数组，最后返回的数组里的元素是递增的。为了保证元素唯一性，可以使用额外变量pre记录上一次加入返回数组中的元素。
+
+步骤：
+1.排序两个数组
+2.建立两个指针分别指向数组首个元素，每次比较两个元素值。如果两个数字不等，则将指向较小的值的指针右移；如果两个数字相等，且该数字不等于pre，可以将该数字添加到返回数组中，并更新pre变量，双指针后移一位；
+3.当至少一个指针超出数组范围，遍历结束。
+
+复杂度分析：
+假设两个vector的长度为m，n，
+时间复杂度：排序O(mlogm + nlogn)，双指针遍历O(m + n)， 总O(mlogm + nlogn)
+空间复杂度：排序使用的额外空间O(logm + logn)
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> res;
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+
+
+        int m = nums1.size();
+        int n = nums2.size();
+
+
+        int i=0, j=0;
+        while(i < m && j < n){
+            if(nums1[i] != nums2[j]){
+                if(nums1[i] < nums2[j])
+                    i++;
+                else
+                    j++;
+            }else{
+                if(res.size() == 0 || res.back() != nums1[i]){
+                    res.push_back(nums1[i]);
+                }
+                i++;
+                j++;
+            }
+        }
+        return res;
+    }
+};
+
+Leetcode 350. 两个数组的交集 II
+给定两个数组，编写一个函数来计算它们的交集。
+
+示例 1：
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2,2]
+
+示例 2:
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[4,9]
+ 
+说明：
+输出结果中每个元素出现的次数，应与元素在两个数组中出现次数的最小值一致。
+我们可以不考虑输出结果的顺序。
+进阶：
+
+如果给定的数组已经排好序呢？你将如何优化你的算法？
+如果 nums1 的大小比 nums2 小很多，哪种方法更优？
+如果 nums2 的元素存储在磁盘上，内存是有限的，并且你不能一次加载所有的元素到内存中，你该怎么办？
+
+ 思路一：
+   哈希表：该题和349不同，该题要输出全部交集且不去重，用unordered_map。
+
+步骤：类似349的思路：
+    1.先将一个数组nums1放到一个map中
+    2.依次遍历另一个数组nums2里的元素，如果map元素的次数>0 则map元素的次数-1， 且存放到返回的数组中
+    3.转成输出格式vector即可。
+
+
+class Solution {
+public:
+
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        vector<int>  res;
+        std::unordered_map<int, int> map;
+        for(int i = 0; i < nums1.size(); i++)
+            map[nums1[i]]++;
+        for(int j = 0; j < nums2.size(); j++){
+            if(map[nums2[j]] > 0)
+            {
+                res.push_back(nums2[j]);
+                map[nums2[j]]--;
+            }
+        }
+        return res;
+    }
+};
