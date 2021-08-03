@@ -156,9 +156,9 @@ public:
 };
 
 
-思路三：此题中是排序+双指针比哈希表方法更简单。
+思路三：此题中是排序+三指针比哈希表方法更简单。
     /*
-    排序 + 双指针法：
+    排序 + 三指针法： 先固定一个指针，然后移动剩余2个指针，把问题弱化到TwoSum的问题上
     1.从下标0位置开始对于元素i，去重判断，建立左右指针left=i+1, right=size-1， 三者元素之和nums[i] + nums[]left] + nums[right]。因为排序好了，则移动指针：
     2.如果nums[i] + nums[]left] + nums[right] > 0 则右指针往前移动，直到left和right相遇
     3.如果nums[i] + nums[]left] + nums[right] < 0小于0则左指针往后移，直到left和right相遇
