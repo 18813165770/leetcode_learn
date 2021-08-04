@@ -499,3 +499,149 @@ public:
     return res; 
     } 
 };
+
+
+Leetcode 18：四数之和给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在四个元素 a，b，c 和 d ，使得 a + b + c + d 的值与 target 相等？找出所有满足条件且不重复的四元组。注意：答案中不可以包含重复的四元组。示例 1：输入：nums = [1,0,-1,0,-2,2], target = 0输出：[[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]示例 2：输入：nums = [], target = 0输出：[] 暴力方法：时间复杂度O(n4)思路一：排序 + 两层循环 + 双指针法：解法就是：两层for循环，nums[i]+nums[j]为固定值，依然内层循环里是left和right为双指针，找出nums[i]+nums[j]+nums[left]+nums[right]==target的情况。三数之和的时间复杂度是O(n2)，四数之和的时间复杂度是O(n3)。同理五数之和，六数之和都是该方法。class Solution {public:    vector<vector<int>> fourSum(vector<int>& nums, int target) {        vector<vector<int>> res;        if(nums.size() < 4) return res;        //排序        sort(nums.begin(), nums.end());        for(int i = 0; i < nums.size(); i++){            if(i > 0 && nums[i] == nums[i - 1])                continue;            for(int j = i+1; j < nums.size(); j++){                if(j > i+1 && nums[j] == nums[j - 1])                    continue;                int a = nums[i] + nums[j];                int left = j + 1;                int right = nums.size() - 1;                while(left < right){                    if(a + nums[left] + nums[right] < target){                        left++;                    }else if(a + nums[left] + nums[right] > target)                        right--;                    else{                        res.push_back({nums[i], nums[j], nums[left], nums[right]});                        while(nums[left] == nums[left + 1])                            left++;                        while(nums[right] == nums[right - 1])                            right--;                        left++;                        right--;                    }                }            }        }        return res;    }};双指针法将时间复杂度从O(n^2)降低到O(n)的题目：三数之和四数之和移除元素操作链表：
+	* 206.反转链表
+	* 19.删除链表的倒数第N个节点
+	* 面试题 02.07. 链表相交
+	* 142题.环形链表II
+
+
+Leetcode383： 赎金题
+
+给定一个赎金信 (ransom) 字符串和一个杂志(magazine)字符串，判断第一个字符串 ransom 能不能由第二个字符串 magazines 里面的字符构成。如果可以构成，返回 true ；否则返回 false。
+
+(题目说明：为了不暴露赎金信字迹，要从杂志上搜索各个需要的字母，组成单词来表达意思。杂志字符串中的每个字符只能在赎金信字符串中使用一次。)
+
+示例 1：
+输入：ransomNote = "a", magazine = "b"
+输出：false
+示例 2：
+输入：ransomNote = "aa", magazine = "ab"
+输出：false
+示例 3：
+输入：ransomNote = "aa", magazine = "aab"
+输出：true
+
+题目含义：ransom是magazine的一部分，并且ransom每个元素只出现一次。
+
+
+思路一：哈希表法 （16 ms）
+由于key无序，且可以通过次数判断是不是false，所以用unordered_map<char, int>
+
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        std::unordered_map<char, int> map;
+        for(int i = 0; i < ransomNote.length(); i++){
+            map[ransomNote[i]]++;
+        }
+        for(int i = 0; i < magazine.length(); i++){
+            map[magazine[i]]--;
+        }
+        //通过遍历两个数组，目前map中只有两种情况，元素value=0， value=负
+        for(auto it=map.begin(); it != map.end(); it++){
+            if(it->second > 0)
+                return false;
+        }
+        return true;
+    }
+}
+
+思路二：数组法 （4 ms）
+时间复杂度O(m+n), 只遍历一遍ransomNote和magazine， 空间复杂度O(1)，只使用常数的存储空间。
+class Solution {
+public:
+    bool canConstruct(string ransomNote, string magazine) {
+        /**
+        通过题目：提示显示两个字符串均只含有小写字母，因此可以考虑用26位数组，数组也是一种简单的哈希，因为map需要维护红黑树或者哈希表，哈希表需要建立哈希函数，因此使用数组更高效
+        */
+        vector<int> res(26, 0);
+        for(int i = 0; i < ransomNote.length(); i++){
+            res[ransomNote[i] - 'a']++;
+        }
+        for(int i = 0; i < magazine.length(); i++){
+            res[magazine[i] - 'a']--;
+        }
+        for(int i = 0; i< 26; i++){
+            if(res[i] > 0)
+                return false;
+        }
+        return true;
+    }
+};
+
+Leetcode202.快乐数
+编写一个算法来判断一个数 n 是不是快乐数。
+
+「快乐数」定义为：
+对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
+然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
+如果 可以变为  1，那么这个数就是快乐数。
+如果 n 是快乐数就返回 true ；不是，则返回 false 。
+
+示例 1：
+输入：19
+输出：true
+解释：
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+
+示例 2：
+输入：n = 2
+输出：false
+ 
+
+这道题是说如果值的每个位数^2相加不断循环能等于1就是快乐数，所以有两种情况：1.值通过循环是快乐数，2.值进入到无限重复的循环。
+
+思路一：找出过程中的重复的数字避免无限循环，因此可以考虑用哈希法，将不能变成快乐数的值直接存储下来，如果查到该值，则返回false。判断sum是否重复出现用unordered_set
+方法：
+1.unordered_set
+初始化unordered_set，把n替换成每个位的平方和，并加入到set中，
+重复这个过程直到出现新的数字==1，返回true，如果新的数字在set中，返回false。
+
+假设从n到1或者无限循环重复需要x次
+
+时间复杂度O(x)，
+空间复杂度O(x)
+
+class Solution {
+public:
+    int getSum(int n){ //n的每个位的平方和
+        int sum = 0;
+        while(n){
+            sum += (n % 10) * (n % 10);
+            n /= 10;
+        }
+        return sum;
+    }
+
+    bool isHappy(int n) {
+
+        //建立一个set，存放那些不是快乐数的值
+        std::unordered_set<int> set;
+
+        while(1){
+            int sum = getSum(n);
+
+            if(sum == 1)
+                return true;
+            if(set.find(sum) != set.end())
+                return false;
+            else{
+                set.insert(sum);
+            }
+            n = sum;
+        }
+    }
+};
+
+思路二：快慢指针
+把转化过程中的每个数看作链表里的一个节点，把1看作链表的最后一个节点，如果从n无法到1，则说明链表中有环。
+
+1.我们设定两个指针fast，slow初始化都是n
+2.当fast != slow时，fast转化2次（走2步），slow转化1次（1步）。
+3.如果fast == slow 并且==1则说明是快乐数，否则不是快乐数
