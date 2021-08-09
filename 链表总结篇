@@ -1,0 +1,32 @@
+定义链表的结构体：
+
+struct ListNode{
+    int val;        //节点存储的元素
+    ListNode *next; //指向下一个节点
+    ListNode(0) : val(0), next(null){}
+    ListNode(int x) : val(x), next(null){} //节点的构造函数
+
+};
+
+链表分类：单链表，双链表，循环链表
+
+
+常见链表题目：
+203 移除链表元素 https://leetcode-cn.com/problems/remove-linked-list-elements/
+206.反转链表
+19.删除链表的倒数第N个节点
+链表相交
+142题.环形链表II
+
+
+
+ 203 移除链表元素
+
+
+删除链表元素的操作：cur->next = cur->next->next。再释放该节点空间即可。在c++中不释放空间也是可以的。
+操作一：直接在原来链表中删除，
+操作二：新建一个虚拟头节点
+
+思路一，直接使用原来的链表进行删除操作：
+1.如果删除的节点是头节点，只需要将头节点向后移一位，将下一个节点返回即可。
+2.如果删除的节点不是头节点，则将cur->next = cur->next->next
