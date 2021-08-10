@@ -30,3 +30,107 @@ struct ListNode{
 思路一，直接使用原来的链表进行删除操作：
 1.如果删除的节点是头节点，只需要将头节点向后移一位，将下一个节点返回即可。
 2.如果删除的节点不是头节点，则将cur->next = cur->next->next
+
+class Solution {public:    ListNode* removeElements(ListNode* head, int val) {        //删除头节点        while(head==NULL || head->val == val){            ListNode *tmp = head;            head = head->next;            delete tmp;        }                //删除的不是头节点        ListNode *cur = head;        while(cur && cur->val != val){            if(cur->next->val ==val ){                ListNode *tmp = cur->next;                cur->next = tmp->next;                delete tmp;                }else{                cur = cur->next;            }        }        return head;    }}思路二：新建一个虚拟头节点class Solution {public:    ListNode* removeElements(ListNode* head, int val) {        ListNode *headtmp = new ListNode(-1);        headtmp->next = head;        ListNode *cur = headtmp;        while(cur->next){            if(cur->next->val == val){                ListNode *tmp = cur->next;                cur->next = tmp->next;                delete tmp;            }else{                cur = cur->next;            }        }        head = headtmp->next;        delete headtmp;        return head;    }}206.反转链表
+
+
+思路：三指针法迭代法。通过改变链表的指针指向，让链表反转。
+1.首先建立一个pre初始化null，一个cur指向头节点。
+2.首先把cur->next保存下来，设为next。链表反转后cur->next就变成pre了。那下一个cur变成pre，next就变成下一个cur。
+1 -> 2 -> 3 -> 4 -> null
+
+null    1 -> 2 -> 3 -> 4 -> null
+pre    cur  next
+
+null <- 1    2  -> 3
+ pre   cur  next
+
+null <- 1    2  -> 3
+        pre  cur  next
+.......
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if(head==NULL) return NULL;
+        ListNode *pre = NULL;
+        ListNode *cur = head;
+        while(cur){
+            ListNode *next = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+};
+
+//思路二：尾递归方法，该方法还是和三指针法逻辑类似，只是用递归法来做。同样将cur==NULL作为循环结束，不断将cur指向pre的过程。
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        return Reverse(NULL, head);
+    }
+    ListNode *Reverse(ListNode *pre, ListNode *cur){
+        if(cur == NULL) return pre;
+        ListNode *next = cur -> next;
+        cur->next = pre;
+        return Reverse(pre, next);
+    }
+}
+
+19.删除链表的倒数第N个节点
+
+
+给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+进阶：你能尝试使用一趟扫描实现吗？
+
+思路：快慢指针的方法，建立一个虚拟节点。
+1.我们先建立一个空指针，通过建立两个指针fast，slow，从空指针开始。因为要删除倒数第n个节点，我们先让fast走n+1步
+2.当fast != NULL 时fast和slow同时移动，当fast==NULL时，slow的下一个节点就是要删除的节点。
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+        ListNode *fast = dummy;
+        ListNode *slow = dummy;
+        while(n-- && fast != NULL){
+            fast = fast->next;
+        }
+        fast = fast -> next;
+        while(fast != NULL){
+            fast = fast->next;
+            slow = slow->next;
+        }
+        slow->next = slow->next->next;
+        return dummy->next;
+    }
+};
+
+思考：快慢指针的方法，直接在链表上操作。
+1.如果head==NULL 直接返回NULL。
+1.建立两个指针fast，slow=head， 因为要删除倒数第n个节点，我们先让fast走n步。如果fast此时是NULL，则说明链表没有n个元素长，则直接返回head->next;
+2.当fast != NULL 时fast和slow同时移动，当fast==NULL时，slow的下一个节点就是要删除的节点。
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(!head) return NULL;
+        ListNode *fast = head;
+        ListNode *slow = head;
+        for(int i=0;i<n;i++){
+                fast = fast->next;
+        }
+        if(fast==NULL)
+            return head->next;
+
+
+        while(fast ->next){
+            fast = fast->next;
+            slow = slow->next;
+        }
+        slow->next = slow->next->next; //fast==NULL时slow的next就是要删除的元素
+        return head;
+    }
+};
