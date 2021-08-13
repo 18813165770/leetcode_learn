@@ -138,3 +138,50 @@ public:
 ---------------------------------------------
 0811
 0812题目没有补充，需要周六日补充
+
+面试题 02.07. 链表相交
+
+给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。
+
+思路一：
+1.先遍历两个链表的长度，lenA，lenB。求出链表长度差diff，先让长度长的链表走diff步。
+2.然后两个链表同时走，如果指针指的值相同表示是环首，则返回。如果指针访问到最后都没有相同则返回NULL。
+时间复杂度O(m+n)，空间复杂度O(1)
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if(headA==NULL || headB==NULL) return NULL;
+        ListNode *t1 = headA;
+        ListNode *t2 = headB;
+        int lenA = 0;
+        int lenB = 0;
+        while(t1){
+            lenA++;
+            t1 = t1->next;
+        }
+        while(t2){
+            lenB++;
+            t2 = t2->next;
+        }
+
+
+        t1 = headA;
+        t2 = headB;
+        if(lenA>lenB){
+            int diff = lenA-lenB;
+            while(diff--) t1=t1->next;
+        }else{
+            int diff = lenB-lenA;
+            while(diff--) t2=t2->next;
+        }
+
+
+        while(t1 && t2){
+            if(t1 == t2) return t1;
+            t1 = t1->next;
+            t2 = t2->next;
+        }
+        return NULL;
+    }
+};
