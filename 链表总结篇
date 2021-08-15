@@ -140,6 +140,8 @@ public:
 
 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 null 。
 
+题目中说求两个链交点的起始节点，因此不是值相同，而是指针相同。简单意思就是节点既在headA上也在headB上。
+
 思路一：
 1.先遍历两个链表的长度，lenA，lenB。求出链表长度差diff，先让长度长的链表走diff步。
 2.然后两个链表同时走，如果指针指的值相同表示是环首，则返回。如果指针访问到最后都没有相同则返回NULL。
@@ -180,6 +182,31 @@ public:
             t2 = t2->next;
         }
         return NULL;
+    }
+};
+
+如果链表相交的部分长度是c，headA的链表不相加长度a，headB的链表不相交长度b，则 a + c + b = b + c + a
+如果链表不相交，则 a + b = b + a.
+
+所以思路二是：将两个链表前后链接在一起，acb，bca。然后遍历这个新的链表，如果两个链表有相交，则一定在新链表的相同长度处。
+
+设置两个指针同时从headA，headB的头出发，然后一直对比是否节点相同，如果不同则一直后移一位，如果headA.next是null，则表明headA到头了，可以从headB开始，如果headB.next是null，则表明headB到头了，可以从headA开始。如果中间相交则返回，如果最终都遍历完则表明不相交，返回NULL。
+
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+
+
+      if(headA == NULL || headB == NULL) return NULL;
+
+
+      ListNode *h1 = headA;
+      ListNode *h2 = headB;
+      while(h1 != h2){
+          h1 = h1 == NULL ? headB : h1->next;
+          h2 = h2 == NULL ? headA : h2->next;
+      }
+      return h1;
     }
 };
 
