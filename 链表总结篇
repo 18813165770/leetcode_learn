@@ -215,6 +215,80 @@ public:
     }
 };
 
+142题 .环形链表II
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。注意，pos 仅仅是用于标识环的情况，并不会作为参数传递到函数中。
+
+说明：不允许修改给定的链表。
+
+进阶：
+你是否可以使用 O(1) 空间解决此题？
+ 
+输入：head = [3,2,0,-4], pos = 1
+输出：返回索引为 1 的链表节点
+解释：链表中有一个环，其尾部连接到第二个节点。
+
+思路一：
+
+读题说返回链表开始入环的第一个节点, 如果链表无环则返回 null。所以第一步是需要判断是否链表有环，第二步是对有环链表返回第一个入环的节点。
+
+第一个问题：判断是否有环可以使用快慢指针fast，slow，fast每次走两步，慢指针每次走一步，如果有环一定会相遇。
+第二个问题：说明快慢指针相遇的地方不一定是环的首节点，假设从链表起始点到环的起始点长度是a，环起始点到相遇点是b，相遇点到环的起始点是c。
+
+———x———\——\
+        \  \  y
+     z   \— \ 相遇
+
+相遇时slow慢指针走了x+y,  快指针fast走了x+n(y+z)+y。n是fast在圈里走了n圈。因为fast指针每次走2步，slow慢指针每次走一步，则快指针走的节点数是慢指针的2倍。
+ x+n(y+z)+y = 2 * (x +y)  =>  n(y+z) = x+y  => (n-1)*(y+z) + z = x。  
+
+如果fast快指针只走了1圈 n=1，则x = z,
+则说明设置两个指针idx1从链表起始点开始走，idx2从相遇点开始走，那他们相遇的地方就是链表的起始点。
+如果fast快指针走了n圈，则是fast在圈里转了n圈后才遇到slow。效果和情况一一样。 
+时间复杂度O(n)，空间复杂度O(1)
+
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* fast = head;
+        ListNode* slow = head;
+        while(fast != NULL && fast->next != NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+            // 快慢指针相遇，此时从head 和 相遇点，同时查找直至相遇
+            if (slow == fast) {  //链表有环，此时在环中相遇
+                ListNode* index1 = fast;
+                ListNode* index2 = head;
+                while (index1 != index2) {
+                    index1 = index1->next;
+                    index2 = index2->next;
+                }
+                return index2; // 返回环的入口
+            }
+        }
+        return NULL;
+    }
+}; 
+               
+思路二：使用哈希表，将每个节点存到哈希表里，此处使用set结构，因为不需要去key有序，不需要存储value值。
+时间复杂度O(n)，空间复杂度O(n)
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        std::unordered_set<ListNode *> set;
+        while(head!=NULL){
+            if(set.count(head)){
+                return head;
+            }
+            set.insert(head);
+            head = head->next;
+        }
+        return NULL;
+    }
+};
+
+
 ---------------------------------------------
 0811
 0812题目没有补充，需要周六日补充
