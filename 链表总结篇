@@ -289,7 +289,115 @@ public:
 };
 
 
----------------------------------------------
-0811
-0812题目没有补充，需要周六日补充
-811-00815补题，把链表补齐
+	* 92.反转链表 II
+
+
+
+思路一：将需要反转的部分通过反转链表1的方法反转，因此找到待反转链表的往前一个节点和往后一个节点就至关重要。
+
+方法一，将需要反转的链表截取出来，反转后再拼接。
+举例：反转3-6部分，则
+1->2->3->4->5->6->7
+
+1->2->3->4->5->6->7
+     |                            |
+    pre1                     last1
+
+
+1->2              7
+
+     3<-4<-5<-6
+
+1->2->6->5->4->3->7
+
+class Solution {
+public:
+    void reverse(ListNode *node){
+        ListNode *pre=NULL;
+        ListNode *cur = node;
+        while(cur != NULL){
+            ListNode *next = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = next;
+        }
+    }
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+
+
+        //1.遍历到left的前一个节点
+        ListNode *pre = dummy;
+        for(int i=1;i<left;i++){
+            pre = pre->next;
+        }
+
+
+        //2.从pre走right-left+1步就可以到right节点
+        ListNode *rightNode = pre;
+        for(int i=0;i<right-left+1;i++)
+            rightNode = rightNode->next;
+
+
+        //3.切断出来一个子链表
+        ListNode *leftNode = pre->next;
+        ListNode *curr = rightNode->next;
+
+
+        pre->next = NULL;
+        rightNode->next = NULL;
+        
+        //4.反转
+        reverse(leftNode);
+
+
+        //5.将链表连接起来
+        pre->next = rightNode;
+        leftNode->next = curr;
+
+
+        return dummy->next;
+    }
+};
+
+步骤：尾插法
+1.第一步由于反转链表可能发生在头部，因此需要先建立一个虚拟节点dummy
+2.建立一个指针访问到left的前一个节点shop
+3.将left-right做链表反转，记下链表最后往后一个节点
+4.将链表的头尾重新赋给新的链表位置。
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+
+
+        //1.遍历到left的前一个节点
+        ListNode *shop = dummy;
+        for(int i=1;i<left;i++){
+            shop = shop->next;
+        }
+
+
+        //2.将left-right之间的节点做反转链表I的操作。
+        ListNode *pre=NULL;
+        ListNode *cur = shop->next;
+        for(int i=0;i<=right-left;i++){
+            ListNode *next = cur->next;
+            cur->next = pre;
+            pre=cur;
+            cur=next;
+        }
+
+
+        //3.将链表连接起来
+        shop->next->next = cur;
+        shop->next = pre;
+
+
+        return dummy->next;
+    }
+};
+
+回文链表
