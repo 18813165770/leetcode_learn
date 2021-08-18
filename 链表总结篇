@@ -400,3 +400,84 @@ public:
 };
 
 回文链表
+给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false 。
+输入：head = [1,2,2,1]
+输出：true
+输入：head = [1,2]
+输出：false
+
+
+思路一：回文链表的意思就是元素是对称的，将所有的元素都放到stack里面，然后从链表头部开始，如果每个元素和stack的栈顶元素值不同，则不是回文链表，返回false。如果遍历完都相同，则说明是回文，返回true。
+时间复杂度O(n)，空间复杂度O(n)
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        stack<ListNode *> st;
+        ListNode *cur = head;
+        while(cur){
+            st.push(cur);
+            cur=cur->next;
+        }
+        while(head){
+            int top = st.top()->val;
+            if(top != head->val)
+                return false;
+            st.pop();
+            head=head->next;
+        }
+        return true;
+    }
+};
+
+其实可以往栈里放一半的数据，此时就需要使用快慢指针确定中间的位置。
+时间复杂度O(n)，空间复杂度O(n)
+
+ 
+思路二：由于是回文的链表，回文是头尾对称，
+1.可以使用快慢指针，当fast快指针到链表尾部时slow慢指针刚好到链表中间，此处需要先确定slow的位置。
+ 比如链表奇数 1-2-3-2-1  
+                 |   | 
+                slow fast 
+ 比如链表偶数数 1-2-3-3-2-1 null 
+                     |      |
+                   slow    fast
+2.将后半部分的链表反转
+  
+3.反转后两个链表都从头开始遍历，如果没遍历完但有节点的值不同，则返回false。如果遍历完都节点值相同则返回true。
+时间复杂度O(n)，空间复杂度O(1)
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        //1.建立快慢指针
+        ListNode *fast = head;
+        ListNode *slow = head;
+        while(fast && fast->next){
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+
+        //2.判断一下链表的长度，如果是长度是偶数，现在slow在后半段的首节点上,fast在null；如果长度是奇数，现在slow刚好在链表正中间，fast在最后一个节点
+       //比如1->2->3->2->1
+        if(fast != NULL) slow=slow->next;
+
+        //3.将后半段链表反转，此处的slow就相当于cur。反转完成后1->2->3<-2<-1
+        ListNode *pre = NULL;
+        while(slow){
+            ListNode *next = slow->next;
+            slow->next = pre;
+            pre = slow;
+            slow = next;
+        }
+
+        //4.从链表的两端开始逐个比较
+        while(pre && head){
+            if(pre->val != head->val)
+                return false;
+            pre=pre->next;
+            head=head->next;
+        }
+        return true;
+    }
+};
