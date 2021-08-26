@@ -303,7 +303,14 @@ C（m+n-2, m-1）。
 2.dp数组的递归公式：if(ob(i,j)==1) 0 else dp[i][j] = dp[i][j-1]+dp[i-1][j]
 3.数组初始化，由于从数组的（0，0）开始遍历，第一行和第一列都是只有一种路径，所以如果（i,j）!= 1 则赋值1。因为如果有障碍物1，我们标记为0.
 4.数组遍历：从（0，0）到（m,n），如果(dp[i][j-1],dp[i-1][j])种有值是-1，则直接去另一个值作为结果。
-5.遍历该过程0  1  1 1 -1  11  1  2
+5.遍历该过程
+0  0  0 
+0  -1 0
+0  0  0
+
+0  1  1 
+1  0  1
+1  1  2
 
 class Solution {public:    
 int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) 
