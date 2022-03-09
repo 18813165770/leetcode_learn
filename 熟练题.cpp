@@ -1083,4 +1083,264 @@ int maxMoney2(vector<int> &nums){
     
 }
 打家劫舍3 树
+int rob3(TreeNode *root){
+    if(root==NULL) return 0;
+    if(!root->left && !root->right) return root->val;
+    //偷父
+    int val1=root->val;
+    if(root->left) val1 += rob3(root->left->left)+rob3(root->left->right);
+    if(root->right) val1 += rob3(root->right->left)+rob3(root->right->right);
+
+    //不偷父
+    int val2=rob(root->left)+rob(root->right);
+    return max(val1,val2);
+}
+//买卖股票
+int maxprofit(vector<int> &prices){
+    int res=0;
+    for(int i=0;i<prices.size();i++){
+        for(int j=i+1;j<prices.size();j++){
+            res = max(res, prices[j]-prices[i]);
+        }
+    }
+    return res;
+}
+
+[7,1,5,3,6,4]
+dp[][0] -7 -1 -1 -1 -1 -1
+dp[][1]  0  0  4  4  5  5
+
+int maxprofit(vector<int> &prices){
+    if(prices.size() == 0) return 0;
+
+    vector<vector<int>> dp(prices.size(), vector<int>(2));
+    dp[0][0]=-prices[0];
+    dp[0][1]=0;
+    for(int i=1;i<prices.size();i++){
+        dp[i][0]=max(dp[i-1][0], -prices[i]);
+        dp[i][1]=max(dp[i-1][1], prices[i]+dp[i-1][0]);
+    }
+    return dp[prices.size()-1][1];
+}
+//买卖股票2:多次买卖一支股票
+int maxprofit(vector<int> &prices){
+    vector<vector<int>> dp(prices.size(), vector<int>(2, 0));
+    dp[0][0]=-prices[0];
+    dp[0][1]=0;
+    for(int i=1;i<prices.size();i++){
+        dp[i][0]=max(dp[i-1][0], dp[i-1][1]-prices[i]);
+        dp[i][1]=max(dp[i-1][1], dp[i-1][0]+prices[i]);
+    }
+    return dp[prices.size()-1][1];
+}
+//买卖股票3:最多买卖2次，再次购买前出售掉之前的股票
+0 无操作
+1 第一次买入
+2 第一次卖出
+3 第二次买入
+4 第二次卖出
+int maxprofit(vector<int> &prices){
+    if(prices.size() == 0) return 0;
+    vector<int> dp(prices.size(), vector<int>(5, 0));
+    dp[0][1]=-prices[0];
+    dp[0][3]=-prices[0];
+
+    for(int i=1;i<prices.size();i++){
+        dp[i][0]=dp[i-1][0];
+        dp[i][1]=max(dp[i-1][1], dp[i-1][0]-prices[i]);
+        dp[i][2]=max(dp[i-1][2], dp[i-1][1]+prices[i]);
+        dp[i][3]=max(dp[i-1][3], dp[i-1][2]-prices[i]);
+        dp[i][4]=max(dp[i-1][4], dp[i-1][3]+prices[i]);
+    }
+    return dp[prices.size()-1][4];
+}
+
+//买卖股票3:最多买卖k次，再次购买前出售掉之前的股票
+0 无操作
+1 第一次买入
+2 第一次卖出
+3 第二次买入
+4 第二次卖出
+int maxprofit(vector<int> &prices){
+    if(prices.size() == 0) return 0;
+    vector<int> dp(prices.size(), vector<int>(2*k+1, 0));
+    for(int j=1;j<2*k;j+=2){
+        dp[0][j]=-prices[0];
+    }
+
+    for(int i=1;i<prices.size();i++){
+        for(int j=0;j<2*k;j+=2){
+            dp[i][j+1]=max(dp[i-1][j+1], dp[i-1][j]-prices[i]);
+            dp[i][j+2]=max(dp[i-1][j+2], dp[i-1][j+1]+prices[i]);
+        }
+    }
+    return dp[prices.size()-1][2*k];
+}
+//买卖股票4:多次买卖，冷冻期
+0 买入
+  卖出
+   1之前卖出
+   2当天卖出
+3  冷冻期
+int maxprofit(vector<int> &prices){
+    if(prices.size() == 0) return 0;
+    vector<int> dp(prices.size(), vector<int>(4, 0));
+    dp[0][0]=-prices[0];
+
+    for(int i=0;i<prices.size();i++){
+        dp[i][0]=max(dp[i-1][0], max(dp[i-1][3]-prices[i], dp[i-1][1]-prices[i]));
+        dp[i][1]=max(dp[i-1][1],dp[i-1][3]);
+        dp[i][2]=dp[i-1][0]+prices[i];
+        dp[i][3]=dp[i-1][2];
+
+    }
+    return max(dp[prices.size()-1][3], max(dp[prices.size()-1][1], prices.size()-1][2]));
+}
+//买卖股票5:多次买卖，手续费
+0 买入
+1 卖出
+dp[i][0]=max(dp[i-1][0], dp[i-1][1]-prices[i]);
+dp[i][1]=max(dp[i-1][1], dp[i-1][0]+prices[i]-fee);
+          1   3  2  8  4  9
+dp[i][0]  -1 -1  -1 -1 1  1
+dp[i][1]  0   0  0  5  5  8
+int maxProfix(vector<int> &prices, int fee){
+    if(prices.size()==0) return 0;
+    vector<int> dp(prices.size(), 0);
+    dp[0][0]=-prices[0];
+    dp[0][1]=0;
+    for(int i=1;i<prices.size();i++){
+        dp[i][0]=max(dp[i-1][0], dp[i-1][1]-prices[i]);
+        dp[i][1]=max(dp[i-1][1], dp[i-1][0]+prices[i]-fee);
+    }
+    return max(dp[prices.size()-1][1]);
+
+}
+//子序列
+//1.最长递增子序列
+vector<vector<int>> res;
+vector<int> path;
+void traversal(vector<int> &nums, int startidx){
+    res.push_back(path);
+    if(startidx> nums.size()) return;
+
+    unordered_set<int> uset;
+    for(int i=startidx;i<nums.size();i++){
+        if((!path.empty() &&nums[i]<path.back()) || uset.find(nums[i])!=uset.end()){
+            continue;
+        }
+        uset.insert(nums[i]);
+        path.push_back(nums[i]);
+        traversal(nums, i+1);
+        path.pop_back(nums[i]);
+    }
+}
+int longZiXulie(vector<int> &nums){
+    traversal(nums, 0);
+    int ret=INT_MIN;
+    for(int i=0;i<res.size();i++){
+        if(path[i].size() > ret)
+            ret=path[i].size();
+    }
+    return ret;
+}
+
+dp[i] j （0 - i-1）
+int longZiXulie(vector<int> &nums){
+    if(nums.size() == 1) return 1;
+    vector<int> dp(nums.size(), 1);
+    int res=0;
+    for(int i=1;i<nums.size();i++){
+        for(int j=0;j<i;j++){
+            if(nums[i]>nums[j])
+                dp[i]=max(dp[i], dp[j]+1);
+        }
+         if(dp[i] > res) res=dp[i];
+    }
+    return res;
+}
+  0 1 0 3 2
+  1 2 1 3 3
+
+int longZiXulie2(vector<int> &nums){
+    if(nums.size() <= 1) return nums.size();
+    vector<int> dp(nums.size(), 1);
+    int res=0;
+    for(int i=1;i<nums.size();i++){
+        if(nums[i]>nums[i-1])
+            dp[i]=dp[i-1]+1;
+        if(dp[i] > res) res=dp[i];
+    }
+    return res;
+} 
+子数组
+int longCopyShuzu(vector<int> &A, vector<int> &B){
+    vector<vector<int>> dp(A.size()+1, vector<int>(B.size()+1, 0));
+    int res=0;
+    for(int i=1;i<=A.size();i++){
+        for(int j=1;j<=B.size();j++){
+            if(A[i-1]==B[j-1]){
+                dp[i][j]=dp[i-1][j-1]+1;
+            }
+            if(dp[i][j] > res) res=dp[i][j];
+        }
+    }
+    return res;
+}
+int longCopyShuzu(vector<int> &A, vector<int> &B){
+    vector<int> dp(B.size()+1, 0);
+    int res=0;
+    for(int i=1;i<=A.size();i++){
+        for(int j=1;j<=B.size();j++){
+            if(A[i-1]==B[j-1]){
+                dp[j]=dp[j-1]+1;
+            }
+            if(dp[j] > res) res=dp[j];
+        }
+    }
+    return res;
+}
+子序列
+int longUnion(string text1, string text2){
+    vector<vector<int>> dp(text1.size()+1, vector<int>(text2.size()+1, 0));
+    for(int i=1;i<=text1.size();i++){
+        for(int j=1;j<=text2.size();j++){
+            if(text1[i-1]==text2[j-1]){
+                dp[i][j]=dp[i-1][j-1]+1;
+            }else{
+                dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+        return dp[text1.size()][text2.size()];
+    }
+}
+
+  [-2,1,-3,4,-1,2,1,-5,4]
+   -2 1 -2 4  3 5 6  1  5 
+子序和
+int maxZixuSum(vector<int> &nums){
+    vector<int> dp(nums.size());
+    dp[0]=nums[0];
+    int res=0;
+    for(int i=1;i<nums.size();i++){
+        dp[i]=max(dp[i-1]+nums[i], nums[i]);
+        if(dp[i] > res) res=dp[i];
+    }
+    return res;
+}
+
+bool isZiXuLie(string s1, string s2){
+    vector<vector<int>> dp(s1.size()+1, vector<int>(s2.size()+1, 0));
+    for(int i=1;i<s1.size();i++){
+        for(int j=1;j<s2.size();j++){
+            if(s1[i-1] == s2[j-1]){
+                dp[i][j]=dp[i-1][j-1]+1;
+            }else{
+                dp[i][j]=dp[i][j-1];
+            }
+        }
+    }
+    if(dp[s1.size()][s2.size()]==s1.size()) return true;
+    else return false;
+}
 
