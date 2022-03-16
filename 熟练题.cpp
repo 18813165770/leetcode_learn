@@ -1389,3 +1389,395 @@ int insert(vector<int> &nums, int target){
     }
     return right;
 }
+//数组
+
+int lowCur(vector<int> &nums){
+    vector<int> sor = nums;
+    sort(sor.begin(), sor.end());
+    int hash[101];
+    for(int i=sor.size()-1;i>=0;i--)
+        hash[sor[i]]=i;
+    for(int i=0;i<nums.size();i++){
+       sor[i]=hash[nums[i]];
+    }
+    return sor;
+}
+
+bool isMountain(vector<int> &nums){
+    int left=0,right=nums.size()-1;
+    while(left<nums.size()-1 && nums[left]<nums[left+1]) left++;
+    while(right>0 && nums[right]<nums[right-1]) right--;
+    if(left==right && left!=0 && right!=nums.size()-1)
+        return true;
+    else return false;
+}
+
+bool isMountain(vector<int> &nums){
+    int left=0,right=nums.size()-1;
+    while(left<nums.size()-1 && nums[left]<nums[left+1])
+        left++;
+    while(right>0 && nums[right]<nums[right-1])
+        right--;
+    if(left==right && left!=0 && right!=nums.size()-1)
+        return true;
+    else
+        return false;
+}
+
+arr = [1,2,2,1,1,3]
+count 1001 3  1002 2 1003 1
+fre   1 1 2 1 3 1 
+bool isSame(vector<int> &nums){
+    int count[2002];
+    for(int i=0;i<nums.size();i++)
+        count[nums[i]+1000]++;
+    bool fre[1002] = {false};
+    for(int i=0;i<count.size();i++){
+        if(count[i]){
+            if(fre[count[i]] == false) fre[count[i]]=true;
+            else return false;
+        }
+        
+        
+    }
+    return true;
+}
+0 1 2 3 2 0    2
+0 1 3 2 0
+0 1 3 0
+
+int newShuzu(vector<int> &nums, int val){
+    int size=nums.size();
+    for(int i=0;i<size;i++){
+        if(nums[i] == val){
+            for(int j=i+1;j<nums.size();j++){
+                nums[j-1] = nums[j];
+            }
+            i--;
+            size--;
+        }
+        
+    }
+    return size;
+}
+0 1 2 3 2 0    2
+0 1 3 0
+fast
+  0 1 3 0
+slow
+int newShuzu(vector<int> &nums, int val){
+    int slow=0;
+    for(int fast=0;fast<nums.size();fast++){
+        if(nums[fast] != val){
+            nums[slow++]=nums[fast];
+        }
+    }
+    return slow;
+}
+
+0 1 0 3 12 
+1 3 12 0 0
+  1  2 3
+vector<int> newShuzu(vector<int> &nums){
+    int slow=0;
+    for(int i=0;i<nums.size();i++){
+        if(nums[i] != 0){
+            nums[slow++]=nums[i];
+        }
+    }
+    for(int i=slow;i<nums.size();i++){
+        nums[i]=0;
+    }
+
+}
+//字符串反转
+the sky is blue 
+eulb si yks eth
+blue is sky the
+void reverse(string &s, int start, int end){
+    for(int i=start,j=end;i<j;i++,j--){
+        swap(s[i], s[j]);
+    }
+}
+void removeExtraSpaces(string &s){
+    int slow=0,fast=0;
+    while(s.size()>0 && fast<s.size() && s[fast]==' ')
+        fast++;
+    for(;fast<s.size();fast++){
+        if(fast-1>0 && s[fast-1]==s[fast] && s[fast] == '')
+            continue;
+        else{
+            s[slow++]=s[fast];
+        }
+    }
+    if(slow-1>0 && s[slow-1]=='')
+        s.resize(slow-1);
+    else{
+        s.resize(slow);
+    }
+}
+string removeExtraSpaces(string& s) {
+    removeExtraSpaces(s);
+    reverse(s, 0, s.size()-1);
+    for(int i=0;i<s.size();i++){
+        int j=i;
+        while(j<s.size() && s[j]!='') j++;
+        reverse(s,i,j-1);
+        i=j;
+    }
+    return s;
+}
+
+vector<string> reverse(vector<string> &s){
+    int start=0,end=s.size()-1;
+    for(;start<end;start++,end--){
+        swap(s[start], s[end]);
+    }
+    return s;
+}
+
+//左旋 输入: s = "abcdefg", k = 2  输出: "cdefgab"
+
+abcdefg  0 6
+gfedcba  0 4 
+cdefab
+
+bagfedc
+cdefgab
+
+void reverse(string &s, int start, int end){
+    for(int i=start,j=end;i<j;i++,j--){
+        swap(s[i], s[j]);
+    }
+}
+string reverseLeftWords(string s, int k){
+    reverse(s, 0, s.size()-1);
+    reverse(s, 0, s.size()-1-k);
+    reverse(s, s.size()-k, s.size());
+}
+
+//右旋
+1 2 3 4 5 6 7 0-6
+4 3 2 1 7 6 5 0-
+5 6 7 1 2 3 4
+void reverse(vector<int> &nums, int start, int end){
+    for(int i=start,j=end;i<j;i++,j--){
+        swap(nums[i], nums[j]);
+    }
+}
+vector<int> reverseNum(vector<int> &nums, int k){
+    int n=nums.size();
+    reverse(nums, 0, n-1-k);
+    reverse(nums,n-k, n-1);
+    reverse(nums, 0, n-1);
+}
+"the sky is blue"  "    rh3 wejro   j3oj jw  "
+"    rh3 wej r o   j3oj jw  "
+ 0123456789101112
+eulb si yks eth
+blue is sky the
+
+void deleteNullWord(string &s){
+    int slowidx=0, fastidx=0;
+    while(s.size()>0 && fastidx<s.size() && s[fastidx]==' ') fast++;
+    
+    for(;fastidx<s.size();fastidx++){
+        if(fastidx-1>0 && s[fastidx-1]==s[fastidx] && s[fastidx]==' ')
+            continue; 
+        else{
+            s[slowidx++]=s[fastidx];
+        }
+    }
+    if(slowidx-1>0 && s[slowidx-1]==' '){
+        s.resize(slowidx-1);
+    }else{
+        s.resize(slowidx);
+    }
+}
+void reverse(string &s, int start, int end){
+    for(int i=start,j=end;i<j;i++,j--){
+        swap(s[i], s[j]);
+    }
+}
+string reverseWords(string &s){
+  //去掉多余空格
+    deleteNullWord(s);
+    reverse(s, 0, s.size()-1);
+    
+    for(int i=0;i<s.size();i++){
+        int j=i;
+        while(j<s.size() && s[j]!='') j++;
+        reverse(s, i, j-1);
+        i=j;
+    }
+    return s;
+}
+
+
+int isCenterIdx(vector<int> &nums){
+    int sum=0;
+    for(int i=0;i<nums.size();i++)
+        sum+=nums[i];
+    int leftSum=0;
+    int rightSum;
+    for(int i=0;i<nums.size();i++){
+        rightSum = sum - leftSum - nums[i];
+        if(leftSum == rightSum){
+            return i;
+        }
+        leftSum += nums[i];
+    }
+    return -1;
+}
+[)
+int getRightBorder(vector<int> &nums, int target){
+    int left=0,right=nums.size()-1;
+    while(left<right){
+        int mid=left + ((right - left) / 2);
+        if(nums[mid]>target){
+            right=mid-1;
+        }else{
+            left=mid+1;
+
+        }
+    }
+}
+vector<int> findIdx(vector<int> &nums, int target){
+    vector<int> res;
+    int left=0,right=nums.size()-1;
+    while(left<=right){
+        int mid=left+((right-left)/2);
+        if(nums[mid] < target){
+            left=mid_1;
+        }else if(nums[mid] > target){
+            right=mid-1;
+        }else{
+            int i=mid;
+            int j=mid;
+            while(nums[i-1]==target && i>0) i--;
+            while(nums[j+1]==target && j<nums.size()-1) j++;
+            return {i,j};
+        }
+    }
+    return vector<int>(2,-1);
+}
+
+int findIdx(vector<int> &nums, int target){
+    int left=0,right=nums.size()-1;
+    while(left<=right){
+        int mid=left+((right-left)/2);
+        if(nums[mid]>target){
+            right=mid-1;
+        }else if(nums[mid]<target){
+            left=mid+1;
+        }else{
+            return mid;
+        }
+    }
+    return right+1;
+}
+vector<int> sortArray(vector<int> &nums){
+    vector<int> res(nums.size());
+    int evenidx=0;
+    int oddidx=1;
+    for(int i=0;i<nums.size();i++){
+        if(nums[i]%2==0){
+            nums[eventidx]=nums[i];
+            eventidx+=2;
+        }else{
+            nums[oddidx]=nums[i];
+            oddidx+=2;
+        }
+    }
+    return res;
+}
+vector<int> sortArray(vector<int> &nums){
+    int oddidx=1;
+    for(int i=0;i<nums.size();i+=2){
+        if(nums[i]%2==1){
+            while(nums[oddidx]%2!=0) oddidx+=2;
+            swap(nums[i], nums[oddidx]);
+        }
+    }
+    return nums;
+}
+
+cur tmp  tmp1
+null-1-2-3-4
+
+null-1-2-3-4
+ |_____|
+
+null-2-1-3-4
+
+ListNode *swapListNode(ListNode *head){
+    ListNode *dummyHead=new ListNode(0);
+    dummyHead->next = head;
+    ListNode *cur = dummyHead;
+    while(cur->next && cur->next->next){
+        ListNode *tmp=cur->next;
+        ListNode *tmp1=cur->next->next->next;
+
+        cur->next = cur->next->next;
+        cur->next->next = tmp;
+        cur->next->next->next=tmp1;
+
+        cur=cur->next->next;
+    }
+    return dummyHead->next;
+}
+        null<-1  ->2->3
+null <- cur  tmp
+1-2-3-3-2-1 -null
+     slow 
+           fast
+ListNode* reverse(ListNode *head){
+    ListNode *cur=head;
+    ListNode *pre=NULL;
+    while(cur){
+        ListNode *tmp=cur->next;
+        cur->next = pre;
+        pre=cur;
+        cur=tmp;
+    }
+    return pre;
+}
+bool isPalindrome(ListNode *head){
+    if(head==NULL || head->next==NULL) return true;
+    ListNode *fast=head;
+    ListNode *slow=head;
+    while(fast && fast->next){
+        pre=slow;
+        slow=slow->next;
+        fast=fast->next->next;
+    }
+    pre->next=NULL;
+    ListNode *cur=head;
+    ListNode *cur2=reverse(slow);
+    while(cur1){
+        if(cur1->val != cur2->val) return false;
+        cur1=cur1->next;
+        cur2=cur2->next;
+    }
+    return true;
+}
+null -1 - 2  - 3 - 4
+cur  tmp     tmp1
+ListNode *swap(ListNode *head){
+    ListNode *dummy=new ListNode(-1);
+    dummy->next=head;
+    ListNode *cur=dummy;
+    while(cur->next && cur->next->next){
+        ListNode *tmp=cur->next;
+        ListNode *tmp1=cur->next->next->next;
+
+        cur->next = tmp->next;
+        cur->next->next = tmp;
+        cur->next->next->next = tmp1;
+
+        cur=cur->next->next;
+    }
+    return dummy->next;
+}
+
+
