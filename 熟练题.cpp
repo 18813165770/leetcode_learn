@@ -1942,3 +1942,96 @@ ListNode *returnJoinList(ListNode *head1, ListNode *head2){
     return NULL;
 
 }
+
+foo  baa
+
+map1[f]=b
+map2[b]=f
+
+map1
+f o i=2
+b a
+map2
+b a  j=2
+f o 
+
+bool isIsomorphic(string s, string t){
+    unordered_map<char,char> map1;
+    unordered_map<char,char> map2;
+    for(int i=0,j=0;i<s.size();i++,j++){
+        if(map1[s[i]] == map1.end()){
+            map1[s[i]]=t[j];
+        }
+        if(map2[t[j]]==map2.end()){
+            map2[t[j]]=s[i];
+        }
+        if(map1[s[i]]!=t[j] || map2[t[j]]!=s[i])
+            return false;
+    }
+    return true;
+}
+vector<int> path;
+int res;
+int vec2int(vector<int> path){
+    int sum=0;
+    for(int i=0;i<path.size();i++){
+        sum = sum * 10 + path[i];
+    }
+    return sum;
+}
+void traversal(TreeNode *cur){
+    if(!cur->left && !cur->right){
+        res += vec2int(path);
+        return;
+    }
+    if(cur->left){
+        path.push_back(cur->left->val);
+        traversal(cur->left);
+        path.pop_back();
+    }
+    if(cur->right){
+        path.push_back(cur->right->val);
+        traversal(cur->right);
+        path.pop_back();
+    }
+}
+int sumNumbers(TreeNode *root){
+    if(root==NULL) return 0;
+    path.push_back(root->val);
+    traversal(root);
+    return res;
+}
+
+bool isSameTree(TreeNode *h1, TreeNode *h2){
+    if(h1==NULL && h2!=NULL) return false;
+    else if(h1!=NULL && h2==NULL) return false;
+    else if(h1==NULL && h2==NULL) return true;
+    else if(h1->val != h2->val) return false;
+    return isSameTree(h1->left, h2->left) &&  isSameTree(h1->right, h2->right); 
+}
+
+
+bool isSameTree(TreeNode *h1, TreeNode *h2){
+    if(p==NULL && q == NULL) return true;
+    if(p==NULL || q==NULL) return false;
+    queue<TreeNode *> q;
+    q.push(h1);
+    q.push(h2);
+    while(!q.empty()){
+        TreeNode *tmp1=q.front();q.pop();
+        TreeNode *tmp2=q.front();q.pop();
+        if((tmp1->val != tmp2->val ) || !tmp1 || !tmp2) return false;
+        q.push(tmp1->left);
+        q.push(tmp2->left);
+        q.push(tmp1->right);
+        q.push(tmp2->right);
+    }
+    return true;
+}
+
+string longHuiwen(string s){
+    vector<vector<int>> dp(s.size(), vector<int>(s.size(), 0));
+    int maxlen=0;
+    int left=0,right=0;
+    for(int i=)
+}
