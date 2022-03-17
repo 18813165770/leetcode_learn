@@ -1746,6 +1746,7 @@ bool isPalindrome(ListNode *head){
     if(head==NULL || head->next==NULL) return true;
     ListNode *fast=head;
     ListNode *slow=head;
+    ListNode *pre=NULL;
     while(fast && fast->next){
         pre=slow;
         slow=slow->next;
@@ -1779,5 +1780,165 @@ ListNode *swap(ListNode *head){
     }
     return dummy->next;
 }
+void reorderList(ListNode *head){
+    if(head==NULL || head->next==NULL) return head;
+    deque<ListNode *> que;
+    ListNode *cur = head;
+    while(cur->next){
+        que.push_back(cur->next);
+        cur=cur->next;
+    }
+    cur=head;
+    int count=0;
+    ListNode *node;
+    while(que.size()){
+        if(count%2==0){  
+            node=que.back();
+            que.pop_back();
+        }else{
+            node=que.front();
+            que.pop_front();
+        }
+        count++;
+        cur->next=node;
+        cur=cur->next;
+    }
+    cur->next=NULL;
+}
 
+1 -> 2 -> 3 -> 4 -> 5
+cur
+deque  
+count 1 
+1 -> 5 ->2 ->4 ->3 -> null
+                cur
+ListNode *reverseList(ListNode *head){
+    ListNode *cur=head;
+    ListNode *pre=NULL;
+    while(cur){
+        ListNode *tmp=cur->next;
+        cur->next=pre;
+        pre=cur;
+        cur=tmp;
+    }
+    return pre;
+}
 
+void reorderList(ListNode *head){
+    if(head==NULL || head->next==NULL) return head;
+    ListNode *fast=head;
+    ListNode *slow=head;
+    while(fast && fast->next && fast->next->next){
+        slow=slow->next;
+        fast=fast->next->next;
+    }
+    slow->next=NULL;
+    ListNode *head1=head;
+    ListNode *head2=reverseList(slow->next);
+    int count=0;
+    ListNode *cur1=head1;
+    ListNode *cur2=head2;
+    ListNode *cur=head;
+    cur1=cur1->next;
+    while(cur1&&cur2){
+        if(count % 2 == 0){
+            cur1->next=cur2;
+            cur2=cur2->next;
+        }else{
+            cur1->next=cur1;
+            cur1=cur1->next;
+        }
+        count++;
+        cur=cur->next;
+    }
+    if(cur1){
+        cur->next=cur1;
+    }
+    if(cur2){
+        cur->next=cur2;
+    }
+}            
+ 
+1 -> 2 -> 3 -> 4 -> 5 -> null
+pre
+        slow
+                  fast
+
+bool hasCycle(ListNode *head){
+    ListNode *fast = head;
+    ListNode *slow = head;
+    while(fast && fast->next){
+        slow=slow->next;
+        fast=fast->next->next;
+        if(fast == slow) return true;
+    }
+    return false;
+}               
+
+ListNode
+
+__x_____y
+    |__|
+   z     相交 
+
+fast x+n(y+z)+y
+slow x+y
+(x+y)=ny+nz=n(y+z)
+x=n(y+z)-y=(n-1)(y+z)+z
+x=z.
+
+ListNode *detectCycle(ListNode *head){
+    ListNode *fast=head;
+    ListNode *slow=head;
+    while(fast && fast->next){
+        slow=slow->next;
+        fast=fast->next->next;
+        if(fast==slow){
+            ListNode *idx1=head;
+            ListNode *idx2=fast;
+            while(idx1 && idx2){
+                idx1=idx1->next;
+                idx2=idx2->next;
+                if(idx1==idx2){
+                    return idx2;
+                }
+            }
+        }
+    }
+    return NULL;
+}
+1234
+ListNode *returnJoinList(ListNode *head1, ListNode *head2){
+    ListNode *cur1=head1;
+    ListNode *cur2=head2;
+    int len1 = 0;
+    int len2 = 0;
+    while(cur1){
+        len1++;
+        cur1=cur1->next;
+    }
+    while(cur2){
+        len2++;
+        cur2=cur2->next;
+    }
+    if(len1<len2){
+        swap(len1, len2);
+        swap(cur1, cur2);
+    }
+    cur1=head1;
+    cur2=head2;
+    int diff=len1-len2;
+    while(diff){
+        cur1=cur1->next;
+        diff--;
+    }
+    while(cur1){
+        if(cur1==cur2){
+            return cur1;
+        }
+        cur1=cur1->next;
+        cur2=cur2->next;
+    }
+    return NULL;
+
+}
