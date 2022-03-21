@@ -2035,3 +2035,87 @@ string longHuiwen(string s){
     int left=0,right=0;
     for(int i=)
 }
+
+
+vector<int> twoSum(vector<int>& nums, int target){
+    unordered_map<int, int> mp;
+    vector<int> res;
+    for(int i=0;i<nums.size();i++){
+        mp[nums[i]]=i;
+    }
+    for(int i=0;i<mp.size();i++){
+        int t = target-mp[i];
+        if(mp.count(t) && mp[t]!=i){
+            res.push_back(mp[t]);
+            res.push_back(i);
+            break;
+        }
+    }
+    return res;
+}
+mp:
+2 7 11 15
+0 1  2  3
+//输入：l1 = [2,4,3], l2 = [5,6,4]   输出：[7,0,8]
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    if(l1==NULL) return l2;
+    if(l2==NULL) return l1;
+    int sum=l1->val+l2->val;
+    int digit=sum%10;
+    int carrt=sum/10;
+
+    ListNode *root=new ListNode(digit);
+    l1=l1->next;
+    l2=l2->next;
+    ListNode *cur=root;
+    while(l1 || l2){
+        int sum=if(l1) ? l1->val: 0 + if(l2)? l2->val:0 + carrt;
+        digit=sum%10;
+        carrt=sum/10;
+
+        ListNode *pnew=new ListNode(digit);
+        cur->next=pnew;
+        cur=pnew;
+
+        l1=l1?l1->next:NULL;
+        l2=l2?l2->next:NULL;
+    }
+    if(carrt==1){
+        *pnew=new ListNode(carrt);
+        cur->next=pnew;
+    }
+    return root;
+}
+double findMaxAverage(vector<int>& nums, int k) {
+    max_avg=0,sum=0,
+
+    start=0;
+    for(int i=0;i<nums.size();i++){
+        sum+=nums[i];
+        if(i-start+1 == k)
+            max_avg=max(sum/k, max_avg);
+        
+        if(i>=k-1){
+            sum-=nums[start];
+            start++;
+        }
+    }
+    return max_avg;
+}
+
+int longSubString(string s){
+    int res=0;
+    unordered_map<char,int> map;
+    
+    int i=0;
+    for(int j=0;j<s.size();j++){
+        map[s[j]]++;
+
+        while(m[s[j]]>1){
+            m[s[i]]--;
+            i++:
+        }
+        res = res > j-i+1 ? res:j-i+1;
+    }
+    return res;
+}
