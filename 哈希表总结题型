@@ -31,9 +31,30 @@ std::multimap               底层实现是红黑树    key有序   查找元素
 
 2.1 数组作为哈希表：数组就是简单的哈希表。题目中表明是小写字母，使用26位数组来完成就可以。
 该题主要包括：
+        1.两数之和
 	242.有效的字母异位词， 	
 	1002 查找常用字符，
 	383： 赎金题
+
+
+Leetcode:1:两数之和
+vector<int> sum(vector<int> &nums, int target){
+    std::unordered_map<int, int> mp;
+    vector<int> res;
+    for(int i=0;i<nums.size();i++){
+        mp[nums[i]]=i;
+    }
+    for(int i=0;i<nums.size();i++){
+        int lef=target-nums[i];
+        if(mp.count(lef) && mp[lef] != i){
+            res.push_back(i);
+            res.push_back(mp[lef]);
+            break;
+        }
+    }
+    return res;
+}
+
 
 Leetcode：242.有效的字母异位词（简单）
 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
